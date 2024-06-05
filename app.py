@@ -138,28 +138,34 @@ def create_conversation(current_user):
 
     # Create a new conversation in the database
     conversation = conversations_collection.insert_one({
-        'name': 'Conversation No ' + current_user['username'],
+        'name': 'Conversation with ' + current_user['username'],
         'created_at': datetime.datetime.utcnow(),
         'user_id': current_user['_id']
     })
 
     conversation_id = conversation.inserted_id
-    # Store the user message and the model response in the database for the conversation
-    messages_collection.insert_many([
+   
+
+    user_message_id = messages_collection.insert_one(
         {
             'sender': 'user',
             'content': user_message,
             'created_at': datetime.datetime.utcnow(),
-            'conversation_id': conversation_id
-        },
+            'conversation_id': ObjectId(conversation_id)
+        }
+    ).inserted_id
+    stored_user_message = messages_collection.find_one({"_id": user_message_id})
+
+    chatbot_message_id = messages_collection.insert_one(
         {
             'sender': 'chatbot',
             'content': model_response,
             'created_at': datetime.datetime.utcnow(),
-            'conversation_id': conversation_id
+            'conversation_id': ObjectId(conversation_id)
         }
-    ])
-
+    ).inserted_id
+    stored_chatbot_message = messages_collection.find_one({"_id": chatbot_message_id})
+    
     return jsonify({
         'conversation': {
             'id': str(conversation_id),
@@ -167,7 +173,9 @@ def create_conversation(current_user):
             'created_at': datetime.datetime.utcnow().isoformat(),
             'user_id': str(current_user['_id'])
         },
-        'prompt_response': model_response
+        'user_message':{'id':str(stored_user_message['_id']),'content':stored_user_message['content'], 'sender':'user'},
+        'prompt_response':{'id':str(stored_chatbot_message['_id']),'content':stored_chatbot_message['content'], 'sender':'chatbot'},
+        
     }), 201
 
 
@@ -188,24 +196,32 @@ def add_message(current_user, conversation_id):
     # Feed the user message to the model and get the model response
     model_response = run_model(user_message)
 
-    # Store the user message and the model response in the database for the conversation
-    messages_collection.insert_many([
+   
+
+    user_message_id = messages_collection.insert_one(
         {
             'sender': 'user',
             'content': user_message,
             'created_at': datetime.datetime.utcnow(),
             'conversation_id': ObjectId(conversation_id)
-        },
+        }
+    ).inserted_id
+    stored_user_message = messages_collection.find_one({"_id": user_message_id})
+
+    chatbot_message_id = messages_collection.insert_one(
         {
             'sender': 'chatbot',
             'content': model_response,
             'created_at': datetime.datetime.utcnow(),
             'conversation_id': ObjectId(conversation_id)
         }
-    ])
+    ).inserted_id
+    stored_chatbot_message = messages_collection.find_one({"_id": chatbot_message_id})
+
 
     return jsonify({
-        'prompt_response': model_response
+        'user_message':{'id':str(stored_user_message['_id']),'content':stored_user_message['content'], 'sender':'user'},
+        'prompt_response':{'id':str(stored_chatbot_message['_id']),'content':stored_chatbot_message['content'], 'sender':'chatbot'},
     }), 201
 
 
