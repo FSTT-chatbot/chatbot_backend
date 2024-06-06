@@ -1,20 +1,45 @@
-the authentication flow:
+# Chatbot Backend
 
-User Login:
+This is the backend part of an intelligent academic chatbot developed for the Faculty of Science and Technology of Tangier (FSTT). The chatbot leverages advanced AI technologies, including Retrieval Augmented Generation (RAG) and fine-tuned language models, to provide accurate and contextually relevant responses to students' and instructors' inquiries.
 
+## Features
 
-Upon successful login, the server returns both an access token and a refresh token to the client.
-Accessing Protected Routes:
+- **Retrieval Augmented Generation (RAG)**: Combines retrieval-based and generation-based techniques for accurate and natural responses.
+- **Fine-tuned Language Model**: The LLaMA 3 language model is fine-tuned on a custom corpus related to FSTT, ensuring domain-specific understanding.
+- **High-performance Backend**: Built with Flask, a lightweight and efficient Python web framework.
+- **Model Serving**: Serves the fine-tuned language model and RAG model for real-time inference.
+- **Docker Containerization**: The backend is containerized using Docker for easy deployment and scalability.
 
-When the client accesses a protected route (e.g., /protected, /users), it includes the access token in the request header.
-If the access token is valid and not expired, the server allows access to the protected route.
-If the access token is expired, the server returns a 403 response indicating that the token has expired.
-Token Refresh:
+## Technologies Used
 
-If the client receives a 403 response due to an expired access token, it can then send a request to the /refresh endpoint with the refresh token.
-The server verifies the refresh token, and if it's valid, it generates a new access token and returns it to the client.
-The client can then retry the original request to the protected route with the new access token.
-Accessing the Users Route:
+- **Flask**: A micro web framework for Python, used for building the backend API.
+- **Hugging Face Transformers**: A library for state-of-the-art natural language processing.
+- **PyTorch**: A deep learning framework for model training and serving.
+- **ChromaDB**: A vector database for efficient data retrieval.
+- **Docker**: A platform for building, deploying, and running containerized applications.
 
-The /users route is protected and requires a valid access token to access.
-If the access token is expired when accessing the /users route, the token_required decorator automatically refreshes the access token using the refresh token before allowing access to the route.
+## Getting Started
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/your-username/chatbot_Backend.git
+```
+2. Clone the repository:
+```bash
+docker build -t chatbot-backend .
+```
+3. Run the Docker container:
+```bash
+docker run -p 5000:5000 chatbot-backend
+```
+The server will start running on http://localhost:5000.
+**Configuration**
+The backend can be configured by modifying the following environment variables:
+
+-MODEL_PATH: Path to the fine-tuned language model (e.g., model-unsloth.Q4_K_M.gguf).
+-RAG_MODEL_PATH: Path to the RAG model.
+-CHROMA_DB_PATH: Path to the ChromaDB database.
+
+License
+This project is licensed under the MIT License.
