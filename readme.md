@@ -39,9 +39,10 @@ The server will start running on http://localhost:5000.
 
 The backend can be configured by modifying the following environment variables:
 
--MODEL_PATH: Path to the fine-tuned language model (e.g., model-unsloth.Q4_K_M.gguf).
--RAG_MODEL_PATH: Path to the RAG model.
--CHROMA_DB_PATH: Path to the ChromaDB database.
+- MODEL_PATH: Path to the fine-tuned language model (e.g., model-unsloth.Q4_K_M.gguf).
+- RAG_MODEL_PATH: Path to the RAG model.
+- CHROMA_DB_PATH: Path to the ChromaDB database.
 
-License
+**License**
+
 This project is licensed under the MIT License.
