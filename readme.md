@@ -34,7 +34,9 @@ docker build -t chatbot-backend .
 docker run -p 5000:5000 chatbot-backend
 ```
 The server will start running on http://localhost:5000.
+
 **Configuration**
+
 The backend can be configured by modifying the following environment variables:
 
 -MODEL_PATH: Path to the fine-tuned language model (e.g., model-unsloth.Q4_K_M.gguf).
